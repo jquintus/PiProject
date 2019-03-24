@@ -1,4 +1,3 @@
-
 import os #used to all external commands
 import sys # used to exit the script
 import dbus
@@ -8,10 +7,10 @@ import RPi.GPIO as GPIO
 import time
 import thread
 
-
 class BtkGpioClient():
 
-        """GPIO client of the Bluetooth Keyboard Emulator
+        """
+        GPIO client of the Bluetooth Keyboard Emulator
         Polls the status of a GPIO pin and triggers the emulator to send a single key
         http://yetanotherpointlesstechblog.blogspot.com
         """
@@ -72,13 +71,11 @@ class BtkGpioClient():
                     0x00,
                     0x00]
 
-
             #initialize the GPIO library    
             print "setting up GPIO"
 
             GPIO.setmode(GPIO.BOARD)
             GPIO.setup(BtkGpioClient.PIN,GPIO.IN,pull_up_down=GPIO.PUD_UP)
-
                 
             #connect with the Bluetooth keyboard server    
             print "setting up DBus Client"  
@@ -87,15 +84,11 @@ class BtkGpioClient():
             self.btkservice = self.bus.get_object('org.yaptb.btkbservice','/org/yaptb/btkbservice')
             self.iface = dbus.Interface(self.btkservice,'org.yaptb.btkbservice')    
 
-
             #hard code the key to send for this demo
             self.state[4]=BtkGpioClient.KEYCODE
 
-        
-
         def send_key_state(self):
-        
-            """sends a single frame of the current key state to the emulator server"""    
+            # sends a single frame of the current key state to the emulator server
 
             bin_str=""
             element=self.state[2]
@@ -103,31 +96,20 @@ class BtkGpioClient():
                     bin_str += str(bit)
             self.iface.send_keys(int(bin_str,2),self.state[4:10]  )
 
-
         def send_key_down(self):
-        
-            """sends a key down event to the server"""    
+            # sends a key down event to the server
 
             self.state[4]=BtkGpioClient.KEYCODE
             self.send_key_state()
 
-
         def send_key_up(self):
-        
-            """sends a key up event to the server"""    
+            # sends a key up event to the server
 
             self.state[4]=0
             self.send_key_state()
 
-
-
         def pin_event(self,channel):
-
-
-            """RPi.GPIO callback method. called when a GPIO  event occurs on the specified pin
-
-            """    
-  
+            # RPi.GPIO callback method. called when a GPIO  event occurs on the specified pin
 
             if(self.key_down==False):
                     print "Key Down"    
@@ -135,28 +117,20 @@ class BtkGpioClient():
             else:
                     print "Key Up"
                     self.key_down=False
-           
-            
 
         def event_loop(self):
 
-            """main loop. sets up the GPIO callback then polls the hit state to detect a key press.
-            """
+            # main loop. sets up the GPIO callback then polls the hit state to detect a key press.
         
             self.key_down=False
             key_up_sent=False    
             key_down_sent=False
             
             GPIO.add_event_detect(BtkGpioClient.PIN, GPIO.BOTH, callback=self.pin_event,bouncetime=250) 
-
                 
             while True:
-
-
                 if(self.key_down ):
-
                         #the pin is set on
-
                         if(BtkGpioClient.REPEAT_KEY and key_down_sent):
                                 #finish the current key and repeat        
                                 self.send_key_up()
@@ -167,20 +141,14 @@ class BtkGpioClient():
                                 #start a key press
                                 self.send_key_down()
                                 key_down_sent=True
-
-
                 else:
-
                         #the pin is set off
-
                         if(key_down_sent):
                                 #finish the key press
                                 self.send_key_up()
                                 key_down_sent=False
 
-
-                time.sleep(BtkGpioClient.MIN_KEY_TIME)  #seems like the minimum delay required for a keypress to be registered
-
+                time.sleep(BtkGpioClient.MIN_KEY_TIME)  # seems like the minimum delay required for a keypress to be registered
 
 if __name__ == "__main__":
 
@@ -190,5 +158,3 @@ if __name__ == "__main__":
 
     print "starting event loop"
     dc.event_loop()
-
-    
