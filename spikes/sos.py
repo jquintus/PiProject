@@ -15,7 +15,7 @@ To stop:
 
 from gpiozero import LED
 from time import sleep
-led = LED(23)
+led = LED(24)
 
 timeUnit = 0.1
 dotTime = 1 * timeUnit
