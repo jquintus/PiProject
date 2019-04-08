@@ -3,21 +3,14 @@ import time
 
 GPIO.setmode(GPIO.BCM)
 
-for pin in range(26):
-    print "setting up pin {}".format(pin)
-    if pin == 2:
-        GPIO.setup(pin, GPIO.IN)
-    elif pin == 3:
-        GPIO.setup(pin, GPIO.IN)
-    else:
-        GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+pin = 26
+GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 print "Listening for buttons"
 
 while True:
-    for pin in range(26):
-        input_state = GPIO.input(pin)
-        if input_state == GPIO.LOW:
-            print("Button pressed")
+    input_state = GPIO.input(pin)
+    if input_state == GPIO.LOW:
+        print("Button pressed")
 
     time.sleep(0.2)
