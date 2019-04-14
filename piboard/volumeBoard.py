@@ -77,24 +77,22 @@ class Button:
 
         return self.last_cmd
 
-def get_command(encoder, button):
-    encoder_cmd = encoder.get_command()
-    button_cmd =  button.get_command()
-
+def get_command(inputs):
+    cmd = max(list(map(lambda i: i.get_command(), inputs)))
     time.sleep(0.001)
-    return max([encoder_cmd, button_cmd])
+    return cmd
 
 def main():
     GPIO.setmode(GPIO.BCM)
 
-    encoder = Encoder(20, Cmd.VolumeDown, 21, Cmd.VolumeUp, Cmd.NoOp)
-    encoder.setup()
-
-    button = Button(26, Cmd.Mute, Cmd.NoOp)
-    button.setup()
+    inputs = [
+        Encoder(20, Cmd.VolumeDown, 21, Cmd.VolumeUp, Cmd.NoOp),
+        Button(26, Cmd.Mute, Cmd.NoOp)
+    ]
+    list(map(lambda i: i.setup(), inputs))
 
     while True:
-        command = get_command(encoder, button)
+        command = get_command(inputs)
         if command != Cmd.NoOp:
             print(command)
 
