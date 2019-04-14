@@ -53,32 +53,39 @@ class Encoder:
         else:
             return Cmd.NoOp
 
+class Button:
+    def __init__(self, pin, cmd):
+        self.pin = pin
+        self.cmd = cmd
 
-GPIO.setmode(GPIO.BCM)
-# Set up the push button
-buttonPin = 26
-GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    def setup(self):
+        GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-def get_button_cmd(cmd_if_pressed):
-    input_state = GPIO.input(buttonPin)
-    if input_state == GPIO.LOW:
-        return cmd_if_pressed
-    else:
-        return Cmd.NoOp
+    def get_command(self):
+        input_state = GPIO.input(self.pin)
+        if input_state == GPIO.LOW:
+            return self.cmd
+        else:
+            return Cmd.NoOp
 
-def get_command(encoder):
+def get_command(encoder, button):
     encoder_cmd = encoder.get_command()
-    button_cmd =  get_button_cmd(Cmd.Mute)
+    button_cmd =  button.get_command()
 
     time.sleep(0.001)
     return max([encoder_cmd, button_cmd])
 
 def main():
+    GPIO.setmode(GPIO.BCM)
+
     encoder = Encoder(20, 21)
     encoder.setup()
 
+    button = Button(26, Cmd.Mute)
+    button.setup()
+
     while True:
-        command = get_command(encoder)
+        command = get_command(encoder, button)
         if command != Cmd.NoOp:
             print(command)
 
