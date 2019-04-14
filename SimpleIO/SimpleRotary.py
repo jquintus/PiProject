@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 '''
 Simple code showing off how to use a rotary encoder
 
