@@ -11,6 +11,7 @@ import time
 from enum import IntEnum
 from Encoder import Encoder
 from Button import Button
+import requests
 
 class Cmd(IntEnum):
     NoOp = 0
@@ -23,24 +24,36 @@ def get_command(inputs):
     time.sleep(0.001)
     return cmd
 
-def main():
+def fire_and_forget(url):
+    def fire():
+        requests.get(url)
+
+    fire()
+
+def create_actions():
+    url = "https://webhook.site/c533e505-2b6d-418b-980f-9742f9009fab/"
+    actions = {
+        Cmd.VolumeUp: lambda: fire_and_forget(url + "up"),
+        Cmd.VolumeDown: lambda: fire_and_forget(url + "down"),
+        Cmd.Mute: lambda: fire_and_forget(url + "mute"),
+    }
+
+    return actions
+
+def main(actions):
     GPIO.setmode(GPIO.BCM)
 
     inputs = [
         Encoder(20, Cmd.VolumeDown, 21, Cmd.VolumeUp, Cmd.NoOp),
         Button(26, Cmd.Mute, Cmd.NoOp)
     ]
-    list(map(lambda i: i.setup(), inputs))
 
-    actions = {
-        Cmd.VolumeUp: lambda: print ("up"),
-        Cmd.VolumeDown: lambda: print ("down"),
-        Cmd.Mute: lambda: print ("mute"),
-    }
+    list(map(lambda i: i.setup(), inputs))
 
     while True:
         command = get_command(inputs)
         action = actions.get(command, lambda: None)
         action()
 
-main()
+actions = create_actions()
+main(actions)
