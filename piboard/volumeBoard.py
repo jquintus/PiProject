@@ -8,6 +8,15 @@ https://learning.oreilly.com/library/view/custom-raspberry-pi/9781484224069/A432
 '''
 import RPi.GPIO as GPIO
 import time
+from enum import IntEnum
+
+class Cmd(IntEnum):
+    NoOp = 0
+    VolumeUp = 1
+    VolumeDown = 2
+    Mute = 3
+
+
 
 GPIO.setmode(GPIO.BCM)
 
@@ -42,22 +51,32 @@ def get_encoder_turn():
 
     return result
 
-def get_button_state():
+def encoder_turn_to_action(change):
+    if change > 0:
+        return Cmd.VolumeUp
+    elif change < 0:
+        return Cmd.VolumeDown
+    else:
+        return Cmd.NoOp
+
+def get_button_cmd(cmd_if_pressed):
     input_state = GPIO.input(buttonPin)
-    return input_state == GPIO.LOW
+    if input_state == GPIO.LOW:
+        return cmd_if_pressed
+    else:
+        return Cmd.NoOp
 
-counter = 0
-old_counter = 0
-while True:
-    change = get_encoder_turn()
-    counter += change 
+def get_command():
+    encoder_cmd = encoder_turn_to_action( get_encoder_turn())
+    button_cmd =  get_button_cmd(Cmd.Mute)
 
-    if get_button_state():
-        counter = 100
-
-    if counter != old_counter:
-        print(counter)
-
-    old_counter = counter
     time.sleep(0.001)
+    return max([encoder_cmd, button_cmd])
 
+def main():
+    while True:
+        command = get_command()
+        if command != Cmd.NoOp:
+            print(command)
+
+main()
