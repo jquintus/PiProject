@@ -16,48 +16,48 @@ class Cmd(IntEnum):
     VolumeDown = 2
     Mute = 3
 
+class Encoder:
+    def __init__(self, a_pin, b_pin):
+        self.a_pin = a_pin
+        self.b_pin = b_pin
+
+        self.old_a = True
+        self.old_b = True
+
+    def setup(self):
+        GPIO.setup(self.a_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.b_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+    def get_encoder_turn(self):
+        # return -1, 0, or +1
+        result = 0
+        self.new_a = GPIO.input(self.a_pin)
+        self.new_b = GPIO.input(self.b_pin)
+
+        if self.new_a != self.old_a or self.new_b != self.old_b:
+            if self.old_a == 0 and self.new_a == 1:
+                result = (self.old_b * 2 - 1)
+            elif self.old_b == 0 and self.new_b == 1:
+                result = -(self.old_a * 2 - 1)
+
+        self.old_a, self.old_b = self.new_a, self.new_b
+
+        return result
+
+    def get_command(self):
+        change = self.get_encoder_turn()
+        if change > 0:
+            return Cmd.VolumeUp
+        elif change < 0:
+            return Cmd.VolumeDown
+        else:
+            return Cmd.NoOp
 
 
 GPIO.setmode(GPIO.BCM)
-
 # Set up the push button
 buttonPin = 26
 GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-# Set up the encoder pins
-input_a = 20
-input_b = 21
-
-GPIO.setup(input_a, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(input_b, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-old_a = True
-old_b = True
-
-def get_encoder_turn():
-    # return -1, 0, or +1
-    result = 0
-    global old_a, old_b
-    new_a = GPIO.input(input_a)
-    new_b = GPIO.input(input_b)
-
-    if new_a != old_a or new_b != old_b:
-        if old_a == 0 and new_a == 1:
-            result = (old_b * 2 - 1)
-        elif old_b == 0 and new_b == 1:
-            result = -(old_a * 2 - 1)
-
-    old_a, old_b = new_a, new_b
-
-    return result
-
-def encoder_turn_to_action(change):
-    if change > 0:
-        return Cmd.VolumeUp
-    elif change < 0:
-        return Cmd.VolumeDown
-    else:
-        return Cmd.NoOp
 
 def get_button_cmd(cmd_if_pressed):
     input_state = GPIO.input(buttonPin)
@@ -66,16 +66,19 @@ def get_button_cmd(cmd_if_pressed):
     else:
         return Cmd.NoOp
 
-def get_command():
-    encoder_cmd = encoder_turn_to_action( get_encoder_turn())
+def get_command(encoder):
+    encoder_cmd = encoder.get_command()
     button_cmd =  get_button_cmd(Cmd.Mute)
 
     time.sleep(0.001)
     return max([encoder_cmd, button_cmd])
 
 def main():
+    encoder = Encoder(20, 21)
+    encoder.setup()
+
     while True:
-        command = get_command()
+        command = get_command(encoder)
         if command != Cmd.NoOp:
             print(command)
 
