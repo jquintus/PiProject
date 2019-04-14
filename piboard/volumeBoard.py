@@ -17,9 +17,13 @@ class Cmd(IntEnum):
     Mute = 3
 
 class Encoder:
-    def __init__(self, a_pin, b_pin):
+    def __init__(self, a_pin, a_cmd, b_pin, b_cmd, noop):
         self.a_pin = a_pin
+        self.a_cmd = a_cmd
+
         self.b_pin = b_pin
+        self.b_cmd = b_cmd
+        self.noop = noop
 
         self.old_a = True
         self.old_b = True
@@ -47,26 +51,31 @@ class Encoder:
     def get_command(self):
         change = self.get_encoder_turn()
         if change > 0:
-            return Cmd.VolumeUp
+            return self.a_cmd
         elif change < 0:
-            return Cmd.VolumeDown
+            return self.b_cmd
         else:
-            return Cmd.NoOp
+            return self.noop
 
 class Button:
-    def __init__(self, pin, cmd):
+    def __init__(self, pin, cmd, noop):
         self.pin = pin
         self.cmd = cmd
+        self.noop = noop
+        self.last_cmd = noop
 
     def setup(self):
         GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     def get_command(self):
         input_state = GPIO.input(self.pin)
-        if input_state == GPIO.LOW:
-            return self.cmd
+
+        if input_state == GPIO.LOW and self.last_cmd == self.noop:
+            self.last_cmd = self.cmd
         else:
-            return Cmd.NoOp
+            self.last_cmd = self.noop
+
+        return self.last_cmd
 
 def get_command(encoder, button):
     encoder_cmd = encoder.get_command()
@@ -78,10 +87,10 @@ def get_command(encoder, button):
 def main():
     GPIO.setmode(GPIO.BCM)
 
-    encoder = Encoder(20, 21)
+    encoder = Encoder(20, Cmd.VolumeDown, 21, Cmd.VolumeUp, Cmd.NoOp)
     encoder.setup()
 
-    button = Button(26, Cmd.Mute)
+    button = Button(26, Cmd.Mute, Cmd.NoOp)
     button.setup()
 
     while True:
