@@ -62,7 +62,7 @@ class Button:
         self.pin = pin
         self.cmd = cmd
         self.noop = noop
-        self.last_cmd = noop
+        self.state = False
 
     def setup(self):
         GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -70,12 +70,16 @@ class Button:
     def get_command(self):
         input_state = GPIO.input(self.pin)
 
-        if input_state == GPIO.LOW and self.last_cmd == self.noop:
-            self.last_cmd = self.cmd
+        if input_state == GPIO.LOW:
+            if not self.state:
+                self.state = True
+                return self.cmd
+            else:
+                return self.noop
         else:
-            self.last_cmd = self.noop
+            self.state = False
+            return self.noop
 
-        return self.last_cmd
 
 def get_command(inputs):
     cmd = max(list(map(lambda i: i.get_command(), inputs)))
@@ -91,9 +95,15 @@ def main():
     ]
     list(map(lambda i: i.setup(), inputs))
 
+    actions = {
+        Cmd.VolumeUp: lambda: print ("up"),
+        Cmd.VolumeDown: lambda: print ("down"),
+        Cmd.Mute: lambda: print ("mute"),
+    }
+
     while True:
         command = get_command(inputs)
-        if command != Cmd.NoOp:
-            print(command)
+        action = actions.get(command, lambda: None)
+        action()
 
 main()
