@@ -12,8 +12,6 @@ To run:
 
 app = Flask(__name__)
 
-last_volume = Sound.current_volume()
-
 
 @app.route("/up")
 def up():
@@ -31,15 +29,7 @@ def down():
 
 @app.route("/mute")
 def mute():
-    global last_volume
-    current_volume  = Sound.current_volume()
-
-    if current_volume > 0:
-        last_volume = current_volume
-        Sound.volume_min()
-    else:
-        Sound.volume_set(last_volume)
-
+    Sound.mute()
     current = str(Sound.current_volume())
     return current
 
