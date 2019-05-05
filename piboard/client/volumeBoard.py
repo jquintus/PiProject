@@ -32,6 +32,7 @@ def fire_and_forget(url):
 
 def create_actions():
     url = "https://webhook.site/c533e505-2b6d-418b-980f-9742f9009fab/"
+    url = "http://surface3:5000/"
     actions = {
         Cmd.VolumeUp: lambda: fire_and_forget(url + "up"),
         Cmd.VolumeDown: lambda: fire_and_forget(url + "down"),
