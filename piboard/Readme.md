@@ -23,3 +23,15 @@ To update the requirements file:
 ```bash
 pip freeze > requirements.txt
 ```
+
+## Configuring Script to Run at Startup
+
+```bash
+sudo vim /etc/rc.local
+```
+
+Add the following before teh `exit 0`
+
+```bash
+python3 /home/pi/code/PiProject/piboard/volumeBoard.py &
+```
