@@ -5,6 +5,7 @@ Simple code showing off how to use a rotary encoder
 Resources:
 https://github.com/simonmonk/raspberrypi_cookbook_ed2/blob/master/rotary_encoder.py
 https://learning.oreilly.com/library/view/custom-raspberry-pi/9781484224069/A432417_1_En_8_Chapter.html
+https://learn.adafruit.com/tlc5947-tlc59711-pwm-led-driver-breakout/python-circuitpython
 '''
 import RPi.GPIO as GPIO
 import time
@@ -13,6 +14,7 @@ from enum import IntEnum
 from Encoder import Encoder
 from Button import Button
 from HoldButton import HoldButton
+from RgbLed import RgbLed
 import requests
 import os
 
@@ -69,7 +71,12 @@ def main(actions):
         action = actions.get(command, lambda: None)
         action()
 
-def test():
+def test_outputs():
+    pass
+
+
+
+def test_inputs():
     GPIO.setmode(GPIO.BCM)
 
     hb = HoldButton(13, "held", "released", None, timedelta(0, 2))
@@ -83,7 +90,7 @@ def test():
             print(command)
 
 
-actions = create_actions()
-main(actions)
-# test()
+# actions = create_actions()
+# main(actions)
+test_outputs()
 
