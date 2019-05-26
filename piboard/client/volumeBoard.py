@@ -14,7 +14,7 @@ from enum import IntEnum
 from Encoder import Encoder
 from Button import Button
 from HoldButton import HoldButton
-from RgbLed import RgbLed
+import RgbLed
 import requests
 import os
 
@@ -39,23 +39,33 @@ def fire_and_forget(url):
     fire()
 
 
-def shutdown():
+def shutdown(rgb):
+    rgb.red(1)
     os.system("sudo poweroff")
 
 
-def create_actions():
+def create_actions(rgb):
     url = "https://webhook.site/c533e505-2b6d-418b-980f-9742f9009fab/"
     url = "http://surface3:5000/"
     actions = {
         Cmd.VolumeUp: lambda: fire_and_forget(url + "up"),
         Cmd.VolumeDown: lambda: fire_and_forget(url + "down"),
         Cmd.Mute: lambda: fire_and_forget(url + "mute"),
-        Cmd.Shutdown: shutdown
+        Cmd.Shutdown: lambda: shutdown(rgb)
     }
 
     return actions
 
+def initialize_led():
+    spi = RgbLed.create_spi()
+    rgb = RgbLed.RgbLed(spi)
+    rgb.setup();
+    rgb.green(1)
+    return rgb
+
+
 def main(actions):
+
     GPIO.setmode(GPIO.BCM)
 
     inputs = [
@@ -70,10 +80,6 @@ def main(actions):
         command = get_command(inputs)
         action = actions.get(command, lambda: None)
         action()
-
-def test_outputs():
-    pass
-
 
 
 def test_inputs():
@@ -90,7 +96,6 @@ def test_inputs():
             print(command)
 
 
-# actions = create_actions()
-# main(actions)
-test_outputs()
-
+rgb = initialize_led()
+actions = create_actions(rgb)
+main(actions)
