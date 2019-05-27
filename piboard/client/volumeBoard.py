@@ -23,7 +23,8 @@ class Cmd(IntEnum):
     VolumeUp = 1
     VolumeDown = 2
     Mute = 3
-    Shutdown = 4
+    ShutdownHeld = 4
+    Shutdown = 5
 
 
 def get_command(inputs):
@@ -40,7 +41,6 @@ def fire_and_forget(url):
 
 
 def shutdown(rgb):
-    rgb.red(1)
     os.system("sudo poweroff")
 
 
@@ -51,6 +51,7 @@ def create_actions(rgb):
         Cmd.VolumeUp: lambda: fire_and_forget(url + "up"),
         Cmd.VolumeDown: lambda: fire_and_forget(url + "down"),
         Cmd.Mute: lambda: fire_and_forget(url + "mute"),
+        Cmd.ShutdownHeld: lambda: rgb.red(1),
         Cmd.Shutdown: lambda: shutdown(rgb)
     }
 
