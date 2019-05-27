@@ -33,3 +33,14 @@ class RgbLed:
     def blue(self, idx):
        self.led[idx] =  (0, 0, self.MAX)
 
+
+    def purple(self, idx):
+        red = int(self.MAX / 4)
+        self.led[idx] = (red, 0, self.MAX)
+
+
+    def dim(self):
+        self.led.red_brightness = 6
+        self.led.green_brightness = 6
+        self.led.bluebrightness = 6
+

@@ -25,6 +25,7 @@ class Cmd(IntEnum):
     Mute = 3
     ShutdownHeld = 4
     Shutdown = 5
+    Green = 6
 
 
 def get_command(inputs):
@@ -41,6 +42,8 @@ def fire_and_forget(url):
 
 
 def shutdown(rgb):
+    print("powering off...")
+    rgb.red(1)
     os.system("sudo poweroff")
 
 
@@ -48,10 +51,11 @@ def create_actions(rgb):
     url = "https://webhook.site/c533e505-2b6d-418b-980f-9742f9009fab/"
     url = "http://surface3:5000/"
     actions = {
+        Cmd.Green: lambda: rgb.green(1),
         Cmd.VolumeUp: lambda: fire_and_forget(url + "up"),
         Cmd.VolumeDown: lambda: fire_and_forget(url + "down"),
         Cmd.Mute: lambda: fire_and_forget(url + "mute"),
-        Cmd.ShutdownHeld: lambda: rgb.red(1),
+        Cmd.ShutdownHeld: lambda: rgb.purple(1),
         Cmd.Shutdown: lambda: shutdown(rgb)
     }
 
@@ -60,7 +64,8 @@ def create_actions(rgb):
 def initialize_led():
     spi = RgbLed.create_spi()
     rgb = RgbLed.RgbLed(spi)
-    rgb.setup();
+    rgb.setup()
+    rgb.dim()
     rgb.green(1)
     return rgb
 
@@ -72,13 +77,18 @@ def main(actions):
     inputs = [
         Encoder(20, Cmd.VolumeDown, 21, Cmd.VolumeUp, Cmd.NoOp),
         Button(26, Cmd.Mute, Cmd.NoOp),
-        HoldButton(3, Cmd.NoOp, Cmd.Shutdown, Cmd.NoOp, timedelta(0,3)),
+        HoldButton(3, Cmd.ShutdownHeld, Cmd.Shutdown, Cmd.NoOp, timedelta(0,3)),
     ]
 
     list(map(lambda i: i.setup(), inputs))
 
+    print("Ready for input")
     while True:
         command = get_command(inputs)
+        if command != Cmd.NoOp:
+            msg = 'Executing {0}'.format(command)
+            print(msg)
+
         action = actions.get(command, lambda: None)
         action()
 
