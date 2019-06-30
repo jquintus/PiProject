@@ -149,31 +149,38 @@ void setupButtons(void)
   {
     pinMode(inputPins[i], INPUT_PULLUP);
   }
-
 }
 
 void setupBluetooth(void)
 {
-  while (!Serial);  // Required for Flora & Micro
-  delay(500);
+  int waitcnt = 0;
+  while(!Serial && (waitcnt++ < 10))  // wait (only so long) for serial port to connect.
+  {
+    delay(100);
+  }
 
-  Serial.begin(115200);
-  Serial.println(F("Adafruit Bluefruit HID Control Key Example"));
-  Serial.println(F("---------------------------------------"));
+  //while (!Serial);  // Required for Flora & Micro
+  // delay(500);
+
+  // Serial.begin(115200);
+  // Serial.println(F("Adafruit Bluefruit HID Control Key Example"));
+  // Serial.println(F("---------------------------------------"));
 
   /* Initialise the module */
-  Serial.print(F("Initialising the Bluefruit LE module: "));
+  // Serial.print(F("Initialising the Bluefruit LE module: "));
+
+  digitalWrite(LED_BUILTIN, 1);
 
   if ( !ble.begin(VERBOSE_MODE) )
   {
     error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
   }
-  Serial.println( F("OK!") );
+  // Serial.println( F("OK!") );
 
   if ( FACTORYRESET_ENABLE )
   {
     /* Perform a factory reset to make sure everything is in a known state */
-    Serial.println(F("Performing a factory reset: "));
+    // Serial.println(F("Performing a factory reset: "));
     if ( ! ble.factoryReset() ){
       error(F("Factory reset failed!"));
     }
@@ -182,7 +189,7 @@ void setupBluetooth(void)
   /* Disable command echo from Bluefruit */
   ble.echo(false);
 
-  Serial.println("Requesting Bluefruit info:");
+  // Serial.println("Requesting Bluefruit info:");
   /* Print Bluefruit information */
   ble.info();
 
@@ -194,13 +201,13 @@ void setupBluetooth(void)
   }
 
   /* Enable HID Service */
-  Serial.println(F("Enable HID Services (including Control Key): "));
+  // Serial.println(F("Enable HID Services (including Control Key): "));
   if (! ble.sendCommandCheckOK(F( "AT+BLEHIDEN=On"  ))) {
     error(F("Failed to enable HID (firmware >=0.6.6?)"));
   }
 
   /* Adding or removing services requires a reset */
-  Serial.println(F("Performing a SW reset (service changes require a reset): "));
+  // Serial.println(F("Performing a SW reset (service changes require a reset): "));
   if (! ble.reset() ) {
     error(F("Couldn't reset??"));
   }
@@ -212,6 +219,12 @@ void setupBluetooth(void)
 */
 /**************************************************************************/
 void loop(void)
+{
+  handleKeyPress();
+  delay(10);
+}
+
+void handleKeyPress(void)
 {
   int pressed = 0;
   int playPressed = false;
