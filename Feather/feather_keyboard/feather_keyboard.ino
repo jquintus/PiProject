@@ -159,15 +159,12 @@ void setupBluetooth(void)
     delay(100);
   }
 
-  //while (!Serial);  // Required for Flora & Micro
-  // delay(500);
-
-  // Serial.begin(115200);
-  // Serial.println(F("Adafruit Bluefruit HID Control Key Example"));
-  // Serial.println(F("---------------------------------------"));
+  Serial.begin(115200);
+  Serial.println(F("Adafruit Bluefruit HID Control Key Example"));
+  Serial.println(F("---------------------------------------"));
 
   /* Initialise the module */
-  // Serial.print(F("Initialising the Bluefruit LE module: "));
+  Serial.print(F("Initialising the Bluefruit LE module: "));
 
   digitalWrite(LED_BUILTIN, 1);
 
@@ -175,12 +172,12 @@ void setupBluetooth(void)
   {
     error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
   }
-  // Serial.println( F("OK!") );
+  Serial.println( F("OK!") );
 
   if ( FACTORYRESET_ENABLE )
   {
     /* Perform a factory reset to make sure everything is in a known state */
-    // Serial.println(F("Performing a factory reset: "));
+    Serial.println(F("Performing a factory reset: "));
     if ( ! ble.factoryReset() ){
       error(F("Factory reset failed!"));
     }
@@ -189,7 +186,7 @@ void setupBluetooth(void)
   /* Disable command echo from Bluefruit */
   ble.echo(false);
 
-  // Serial.println("Requesting Bluefruit info:");
+  Serial.println("Requesting Bluefruit info:");
   /* Print Bluefruit information */
   ble.info();
 
@@ -201,13 +198,13 @@ void setupBluetooth(void)
   }
 
   /* Enable HID Service */
-  // Serial.println(F("Enable HID Services (including Control Key): "));
+  Serial.println(F("Enable HID Services (including Control Key): "));
   if (! ble.sendCommandCheckOK(F( "AT+BLEHIDEN=On"  ))) {
     error(F("Failed to enable HID (firmware >=0.6.6?)"));
   }
 
   /* Adding or removing services requires a reset */
-  // Serial.println(F("Performing a SW reset (service changes require a reset): "));
+  Serial.println(F("Performing a SW reset (service changes require a reset): "));
   if (! ble.reset() ) {
     error(F("Couldn't reset??"));
   }
@@ -282,4 +279,3 @@ void printControlKey(char keys[])
     ble.print("AT+BleHidControlKey=");
     ble.println(keys);
 }
-
