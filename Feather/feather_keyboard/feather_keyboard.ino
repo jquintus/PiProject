@@ -261,6 +261,11 @@ void setupBluetooth(void)
     error(F("This sketch requires firmware version " MINIMUM_FIRMWARE_VERSION " or higher!"));
   }
 
+  Serial.println(F("Setting device name to 'Master Board': "));
+  if (! ble.sendCommandCheckOK(F( "AT+GAPDEVNAME=Master Board" )) ) {
+    error(F("Could not set device name?"));
+  }
+
   /* Enable HID Service */
   Serial.println(F("Enable HID Services (including Control Key): "));
   if (! ble.sendCommandCheckOK(F( "AT+BLEHIDEN=On"  ))) {
