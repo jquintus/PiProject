@@ -78,6 +78,10 @@ char CMD_VOLUME_DOWN[9]        = "00-00-81"; // Volume Down
 char CMD_VOLUME_MUTE[9]        = "00-00-7F"; // Volume Mute
 
 /* Other Key Bindings */
+char CMD_ARROW_RIGHT[9]        = "00-00-4F";
+char CMD_ARROW_LEFT[9]         = "00-00-50";
+char CMD_ARROW_DOWN[9]         = "00-00-51";
+char CMD_ARROW_UP[9]           = "00-00-52";
 char CMD_F14[9]                = "00-00-69";
 char CMD_ENTER[9]              = "00-00-28";
 char CMD_KEYS_UP[9]            = "00-00-00"; // No keys held

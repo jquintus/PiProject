@@ -28,7 +28,9 @@ QuinCommand yellowTop(
   );
 
 QuinCommand yellowBottom(
-  CMD_ZOOM_START_SHARE
+  CMD_ZOOM_START_SHARE,
+  CMD_ARROW_RIGHT,
+  CMD_ENTER
   );
 
 QuinCommand redTop(
