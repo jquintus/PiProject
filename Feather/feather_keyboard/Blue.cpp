@@ -65,8 +65,8 @@ void Blue::setup()
     error(F("This sketch requires firmware version " MINIMUM_FIRMWARE_VERSION " or higher!"));
   }
 
-  Serial.println(F("Setting device name to 'Master Board LE': "));
-  if (! ble.sendCommandCheckOK(F( "AT+GAPDEVNAME=Master Board LE")) ) {
+  Serial.println(F("Setting device name to 'Master Board': "));
+  if (! ble.sendCommandCheckOK(F( "AT+GAPDEVNAME=Master Board")) ) {
     error(F("Could not set device name?"));
   }
 
