@@ -23,6 +23,22 @@ QuinCommand greenBottom(
   CMD_ENTER
   );
 
+QuinCommand yellowTop(
+  CMD_ZOOM_GALLERY_VIEW
+  );
+
+QuinCommand yellowBottom(
+  CMD_ZOOM_START_SHARE
+  );
+
+QuinCommand redTop(
+  CMD_ZOOM_TOGGLE_VIDEO
+  );
+
+QuinCommand redBottom(
+  CMD_ZOOM_TOGGLE_MUTE
+  );
+
 void setup(void)
 {
   setupButtons();
@@ -61,7 +77,7 @@ void handleKeyPress(void)
   if ( digitalRead(9) == LOW )
   {
     pressed++;
-    blue.sendKeyboardCode(CMD_ZOOM_GALLERY_VIEW);
+    yellowTop.invoke();
   }
 /*
   if ( digitalRead(10) == LOW )
@@ -76,17 +92,17 @@ void handleKeyPress(void)
   if ( digitalRead(10) == LOW )
   {
     pressed++;
-    blue.sendKeyboardCode(CMD_ZOOM_START_SHARE);
+    yellowBottom.invoke();
   }
   if ( digitalRead(11) == LOW )
   {
     pressed++;
-    blue.sendKeyboardCode(CMD_ZOOM_TOGGLE_MUTE);
+    redBottom.invoke();
   }
   if ( digitalRead(12) == LOW )
   {
     pressed++;
-    blue.sendKeyboardCode(CMD_ZOOM_TOGGLE_VIDEO);
+    redTop.invoke();
   }
 
   if (pressed < 1 && buttonsPressedLastTime > 0){
