@@ -85,14 +85,14 @@ void Blue::setup()
 
 void Blue::sendKeyboardCode(char code[])
 {
-    // ble.print("AT+BleKeyboardCode=");
-    // ble.println(code);
+    ble.print("AT+BleKeyboardCode=");
+    ble.println(code);
 }
 
 void Blue::sendControlKey(char keys[])
 {
-    // ble.print("AT+BleHidControlKey=");
-    // ble.println(keys);
+    ble.print("AT+BleHidControlKey=");
+    ble.println(keys);
 }
 
 void Blue::error(const __FlashStringHelper*err) {

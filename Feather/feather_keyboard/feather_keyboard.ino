@@ -14,13 +14,19 @@ int inputPins[6] = { 5, 6, 9, 10, 11, 12};
 int buttonsPressedLastTime;
 
 Blue blue(0);  // The int is ignored
-QuinCommand cmd1(8);
+QuinCommand greenTop(
+  CMD_ZOOM_START_MEETING
+  );
+
+QuinCommand greenBottom(
+  CMD_ZOOM_END_MEETING,
+  CMD_ENTER
+  );
 
 void setup(void)
 {
   setupButtons();
   blue.setup();
-  cmd1.setBlue(blue);
 }
 
 void setupButtons(void)
@@ -35,6 +41,7 @@ void setupButtons(void)
 void loop(void)
 {
   handleKeyPress();
+  delay(10);
 }
 
 void handleKeyPress(void)
@@ -44,12 +51,12 @@ void handleKeyPress(void)
   if ( digitalRead(5) == LOW )
   {
     pressed++;
-    blue.sendKeyboardCode(CMD_ZOOM_END_MEETING);
+    greenBottom.invoke();
   }
   if ( digitalRead(6) == LOW )
   {
     pressed++;
-    blue.sendKeyboardCode(CMD_ZOOM_START_MEETING);
+    greenTop.invoke();
   }
   if ( digitalRead(9) == LOW )
   {

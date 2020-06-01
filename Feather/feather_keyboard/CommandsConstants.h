@@ -1,3 +1,6 @@
+#ifndef CommandConstants_h
+#define CommandConstants_h
+
 /* 
  * For full list of commands look at section 12
  * http://www.freebsddiary.org/APC/usb_hid_usages.php
@@ -57,23 +60,26 @@
 
 /* Zoom Key Bindings */
 // https://support.zoom.us/hc/en-us/articles/205683899-Hot-Keys-and-Keyboard-Shortcuts-for-Zoom
-const char CMD_ZOOM_TOGGLE_MUTE[]   = "82-00-04"; // Command + Shift + A
-const char CMD_ZOOM_TOGGLE_VIDEO[]  = "82-00-19"; // Command + Alt + V
-const char CMD_ZOOM_END_MEETING[]   = "80-00-1A"; // Command + W
-const char CMD_ZOOM_START_MEETING[] = "81-00-19"; // Command + Control + V
-const char CMD_ZOOM_START_SHARE[]   = "82-00-16"; // Command + Shift + S
-const char CMD_ZOOM_GALLERY_VIEW[]  = "82-00-1A"; // Command + Shift + W
+const char CMD_ZOOM_TOGGLE_MUTE[9]   = "82-00-04"; // Command + Shift + A
+const char CMD_ZOOM_TOGGLE_VIDEO[9]  = "82-00-19"; // Command + Alt + V
+const char CMD_ZOOM_END_MEETING[9]   = "80-00-1A"; // Command + W
+const char CMD_ZOOM_START_MEETING[9] = "81-00-19"; // Command + Control + V
+const char CMD_ZOOM_START_SHARE[9]   = "82-00-16"; // Command + Shift + S
+const char CMD_ZOOM_GALLERY_VIEW[9]  = "82-00-1A"; // Command + Shift + W
 
 /* Mac Key Bindings */
-char CMD_MISSION_CONTROL[]    = "01-00-52"; // (Left) Control + Arrow Up
-char CMD_APP_WINDOWS[]        = "01-00-51"; // (Left) Control + Arrow Down
-char CMD_SHOW_DESKTOP[]       = "08-00-07"; // (Left) Window + D
+char CMD_MISSION_CONTROL[9]    = "01-00-52"; // (Left) Control + Arrow Up
+char CMD_APP_WINDOWS[9]        = "01-00-51"; // (Left) Control + Arrow Down
+char CMD_SHOW_DESKTOP[9]       = "08-00-07"; // (Left) Window + D
 
 /* Media Key Bindings */
-char CMD_VOLUME_UP[]          = "00-00-80"; // Volume Up
-char CMD_VOLUME_DOWN[]        = "00-00-81"; // Volume Down
-char CMD_VOLUME_MUTE[]        = "00-00-7F"; // Volume Mute
+char CMD_VOLUME_UP[9]          = "00-00-80"; // Volume Up
+char CMD_VOLUME_DOWN[9]        = "00-00-81"; // Volume Down
+char CMD_VOLUME_MUTE[9]        = "00-00-7F"; // Volume Mute
 
 /* Other Key Bindings */
-char CMD_F14[]               = "00-00-69"; // F14
-char CMD_KEYS_UP[]           = "00-00";    // No keys held
+char CMD_F14[9]                = "00-00-69";
+char CMD_ENTER[9]              = "00-00-28";
+char CMD_KEYS_UP[9]            = "00-00-00"; // No keys held
+
+#endif
