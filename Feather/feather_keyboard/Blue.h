@@ -1,4 +1,5 @@
-#include "Adafruit_BluefruitLE_SPI.h"
+#ifndef Blue_h
+#define Blue_h
 
 class Blue
 {
@@ -7,6 +8,9 @@ class Blue
         void setup();
         void sendKeyboardCode(char code[]);
         void sendControlKey(char keys[]);
+        void foo();
     private:
         void error (const __FlashStringHelper*err);
 };
+
+#endif

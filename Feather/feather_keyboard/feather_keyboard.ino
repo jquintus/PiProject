@@ -20,6 +20,7 @@ void setup(void)
 {
   setupButtons();
   blue.setup();
+  cmd1.setBlue(blue);
 }
 
 void setupButtons(void)

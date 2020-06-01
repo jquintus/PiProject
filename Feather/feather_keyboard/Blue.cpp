@@ -99,3 +99,7 @@ void Blue::error(const __FlashStringHelper*err) {
   Serial.println(err);
   while (1);
 }
+
+void Blue::foo(){
+  Serial.println("Got here");
+}
