@@ -5,6 +5,21 @@ import usb_hid
 from adafruit_hid.consumer_control import ConsumerControl
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 
+"""
+HARDWARE
+Board: Metro Express
+Rotary encoder
+    clk   -> D11
+    dt    -> D10
+    sw    -> D9
+    +     -> 5v
+    grnd  -> grnd
+
+STEMMA Wired Tactile Push-Button Pack
+    Red Button   -> GRND & D8
+    Black Button -> GRND & D7
+"""
+
 print("finished imports")
 
 button = digitalio.DigitalInOut(board.D9)
