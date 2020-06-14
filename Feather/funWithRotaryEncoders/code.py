@@ -5,15 +5,10 @@ from adafruit_ble.services.standard.hid import HIDService
 from adafruit_ble.services.standard.device_info import DeviceInfoService
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
-from adafruit_hid.keycode import Keycode
 
 import rotaryio
 import board
 import digitalio
-
-import usb_hid
-from adafruit_hid.consumer_control import ConsumerControl
-from adafruit_hid.consumer_control_code import ConsumerControlCode
 
 """
 HARDWARE
@@ -43,8 +38,6 @@ advertisement = ProvideServicesAdvertisement(hid)
 advertisement.appearance = 961
 scan_response = Advertisement()
 scan_response.complete_name = "TEST CircuitPython HID"
-
-cc = ConsumerControl(hid.devices)
 
 ble = adafruit_ble.BLERadio()
 if not ble.connected:
@@ -81,5 +74,3 @@ while True:
         volume_down(position_change)
         print(current_position)
     last_position = current_position
-
-    
