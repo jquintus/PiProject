@@ -12,6 +12,11 @@ from adafruit_ble.services.standard.device_info import DeviceInfoService
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
 from adafruit_hid.keycode import Keycode
+import rotaryio
+
+# Set up constants
+VOLUME_UP = 0x80
+VOLUME_DOWN = 0x81
 
 # Set up buttons
 button_top_red = DigitalInOut(board.D12)
@@ -38,6 +43,11 @@ button_bot_blu = DigitalInOut(board.D5)
 button_bot_blu.direction = Direction.INPUT
 button_bot_blu.pull = Pull.UP
 
+# Set up rotary encoder
+encoder = rotaryio.IncrementalEncoder(board.A0, board.A1)
+last_position = encoder.position
+
+# Set up Keyboard and Bluethooth
 hid = HIDService()
 
 device_info = DeviceInfoService(software_revision=adafruit_ble.__version__,
@@ -99,6 +109,23 @@ while True:
             time.sleep(0.1)
             k.send(Keycode.ENTER)
             time.sleep(0.4)
+
+        # Rotary encoder (volume knob)
+        current_position = encoder.position
+        position_change = current_position - last_position
+        if position_change > 0:
+            for _ in range(position_change):
+                print("Going up")
+                k.send(VOLUME_UP)
+            print(current_position)
+
+        elif position_change < 0:
+            for _ in range(-1 * position_change):
+                print("going down")
+                k.send(VOLUME_DOWN)
+            print(current_position)
+
+        last_position = current_position
 
     ble.start_advertising(advertisement)
 
