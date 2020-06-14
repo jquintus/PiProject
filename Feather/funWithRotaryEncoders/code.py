@@ -1,6 +1,16 @@
+import adafruit_ble
+from adafruit_ble.advertising import Advertisement
+from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
+from adafruit_ble.services.standard.hid import HIDService
+from adafruit_ble.services.standard.device_info import DeviceInfoService
+from adafruit_hid.keyboard import Keyboard
+from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
+from adafruit_hid.keycode import Keycode
+
 import rotaryio
 import board
 import digitalio
+
 import usb_hid
 from adafruit_hid.consumer_control import ConsumerControl
 from adafruit_hid.consumer_control_code import ConsumerControlCode
@@ -22,35 +32,43 @@ STEMMA Wired Tactile Push-Button Pack
 
 print("finished imports")
 
-button = digitalio.DigitalInOut(board.D9)
-button.direction = digitalio.Direction.INPUT
-button.pull = digitalio.Pull.UP
+VOLUME_UP = 0x80
+VOLUME_DOWN = 0x81
 
-button2 = digitalio.DigitalInOut(board.D8)
-button2.direction = digitalio.Direction.INPUT
-button2.pull = digitalio.Pull.UP
+hid = HIDService()
 
-button3 = digitalio.DigitalInOut(board.D7)
-button3.direction = digitalio.Direction.INPUT
-button3.pull = digitalio.Pull.UP
+device_info = DeviceInfoService(software_revision=adafruit_ble.__version__,
+                                manufacturer="Adafruit Industries")
+advertisement = ProvideServicesAdvertisement(hid)
+advertisement.appearance = 961
+scan_response = Advertisement()
+scan_response.complete_name = "TEST CircuitPython HID"
 
-encoder = rotaryio.IncrementalEncoder(board.D11, board.D10)
+cc = ConsumerControl(hid.devices)
 
-cc = ConsumerControl(usb_hid.devices)
+ble = adafruit_ble.BLERadio()
+if not ble.connected:
+    print("advertising")
+    ble.start_advertising(advertisement, scan_response)
+else:
+    print("already connected")
+    print(ble.connections)
 
-button1_state = None
-button2_state = None
-button3_state = None
+k = Keyboard(hid.devices)
+kl = KeyboardLayoutUS(k)
+
+encoder = rotaryio.IncrementalEncoder(board.A1, board.A2)
 last_position = encoder.position
 
 def volume_up(delta):
     for _ in range(delta):
-        cc.send(ConsumerControlCode.VOLUME_INCREMENT)
+        print("Going up")
+        k.send(VOLUME_UP)
 
 def volume_down(delta):
     for _ in range(-1 * delta):
         print("going down")
-        cc.send(ConsumerControlCode.VOLUME_DECREMENT)
+        k.send(VOLUME_DOWN)
 
 print("Finished setup")
 while True:
@@ -64,23 +82,4 @@ while True:
         print(current_position)
     last_position = current_position
 
-    if not button.value and button1_state is None:
-        button1_state = "pressed"
-    if button.value and button1_state == "pressed":
-        print("Button 1 pressed.")
-        cc.send(ConsumerControlCode.PLAY_PAUSE)
-        button1_state = None
-
-    if not button2.value and button2_state is None:
-        button2_state = "pressed"
-    if button2.value and button2_state == "pressed":
-        print("Button 2 pressed.")
-        cc.send(ConsumerControlCode.SCAN_NEXT_TRACK)
-        button2_state = None
-
-    if not button3.value and button3_state is None:
-        button3_state = "pressed"
-    if button3.value and button3_state == "pressed":
-        print("Button 3 pressed.")
-        cc.send(ConsumerControlCode.SCAN_PREVIOUS_TRACK)
-        button3_state = None
+    
