@@ -44,7 +44,7 @@ button_bot_blu.direction = Direction.INPUT
 button_bot_blu.pull = Pull.UP
 
 # Set up rotary encoder
-encoder = rotaryio.IncrementalEncoder(board.A0, board.A1)
+encoder = rotaryio.IncrementalEncoder(board.A1, board.A0)
 last_position = encoder.position
 
 # Set up Keyboard and Bluethooth
