@@ -73,18 +73,18 @@ kl = KeyboardLayoutUS(k)
 mouse = Mouse(hid.devices)
 
 # Define some helper functions
-def move_mouse_to_right_screen():
+def move_mouse_to_right_monitor():
     SCREEN_X = 1920 * 2
     SCREEN_Y = 1080 * 2
 
     """
     MacOS has a concept of "hot corners". A side effect of this is that when
-    you move the mouse to the very bottom of the screen and then move the mouse
-    horiztonally to the next screen, it will get "stuck" in the bottom corner
+    you move the mouse to the very bottom of the monitor and then move the mouse
+    horiztonally to the next monitor, it will get "stuck" in the bottom corner
     and not move past it, possibly also activating whatever behavior is set up
     for that "hot corner". To avoid this, I'm moving the mouse to the bottom of
-    the screen, then up just a little bit to get over the "lip" of the screen.
-    Then I move the mouse horizontally to the right screen. 
+    the monitor, then up just a little bit to get over the "lip" of the monitor.
+    Then I move the mouse horizontally to the right monitor. 
     
     Trying to do this all in one go would likely result in getting caught in that lip.
     """
@@ -103,25 +103,25 @@ while True:
     while ble.connected:
         if not button_top_red.value:
             print("Button 12 (top red) - Toggle Video")
-            move_mouse_to_right_screen()
+            move_mouse_to_right_monitor()
             k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.V)
             time.sleep(0.4)
 
         if not button_bot_red.value:
             print("Button 11 (bot red) - Toggle Mute")
-            move_mouse_to_right_screen()
+            move_mouse_to_right_monitor()
             k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.A)
             time.sleep(0.4)
 
         if not button_top_yel.value:
             print("Button  9 (top yel) - Change View")
-            move_mouse_to_right_screen()
+            move_mouse_to_right_monitor()
             k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.W)
             time.sleep(0.4)
 
         if not button_bot_yel.value:
             print("Button 10 (bot yel) - Start Screen Share")
-            move_mouse_to_right_screen()
+            move_mouse_to_right_monitor()
             k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.S)
             time.sleep(0.1)
             k.send(Keycode.RIGHT_ARROW)
@@ -136,7 +136,7 @@ while True:
 
         if not button_bot_blu.value:
             print("Button  5 (bot blu) - Closing Meeting")
-            move_mouse_to_right_screen()
+            move_mouse_to_right_monitor()
             k.send(Keycode.COMMAND, Keycode.W)
             time.sleep(0.1)
             k.send(Keycode.ENTER)
