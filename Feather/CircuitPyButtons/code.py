@@ -93,7 +93,7 @@ def move_mouse_to_right_monitor():
     mouse.move(x = SCREEN_X)
     mouse.move(x=-100)
     mouse.click(Mouse.LEFT_BUTTON)
-    time.sleep(0.1)
+    time.sleep(0.01)
 
 def zoom_toggle_video():
     move_mouse_to_right_monitor()
@@ -143,18 +143,19 @@ def zoom_assign_host_and_leave_meeting():
                                   # time ensures we kno
                                   # exactly where the mouse is
     k.send(Keycode.COMMAND, Keycode.W) # Opens the "End for all or leave" menu
-    time.sleep(0.1)
+    # time.sleep(0.1)
 
     mouse.move(x=-750, y=-425)     # Move the cursor to (roughly) 
                                    # the center of the screen which 
                                    # is where the leave button is
-    time.sleep(0.1)
+    # time.sleep(0.1)
     mouse.click(Mouse.LEFT_BUTTON) # Click the leave button
                                    # this opens the menu to select a new host
                                    # That menu will select the first perso
                                    # by default. We don't need to change that.
-    time.sleep(0.1)
+    # time.sleep(0.1)
     mouse.click(Mouse.LEFT_BUTTON) # Click the "assign and leave" button
+    time.sleep(0.4)
 
 coarse = -200
 fine = -25
