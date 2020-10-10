@@ -111,13 +111,28 @@ def zoom_change_view():
     time.sleep(0.4)
 
 def zoom_start_screen_share():
+    """
+    Due to a recent change in Zoom's UI, you can no longer use arrow
+    keys to navigate their onscreen menus. This means I have to 
+    hard code mouse clicks to select the second screen to share.
+    """
+
+    running_x = 0
+    running_y = 0
+
     move_mouse_to_right_monitor()
+    move_mouse_to_right_monitor() # Doing this a secon
+                                  # time ensures we kno
+                                  # exactly where the mouse is
+    
     k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.S)
+
+    mouse.move(x = -900, y = -650) # Move the mouse to the desktop 2 button
+
+    mouse.click(Mouse.LEFT_BUTTON) # These two lines will double click 
+    mouse.click(Mouse.LEFT_BUTTON) # the "Dekstop 2" button"
+    
     time.sleep(0.1)
-    k.send(Keycode.RIGHT_ARROW)
-    time.sleep(0.1)
-    k.send(Keycode.ENTER)
-    time.sleep(0.4)
 
 def zoom_start_meeting():
     k.send(Keycode.COMMAND, Keycode.CONTROL, Keycode.V)
@@ -160,6 +175,23 @@ def zoom_assign_host_and_leave_meeting():
 coarse = -200
 fine = -25
 
+running_x = 0
+running_y = 0
+
+def move_x(delta, running_x):
+    mouse.move(delta)
+    print(f"X: {running_x}, Y: {running_y}")
+    
+    time.sleep(1)
+    return running_x + delta
+
+def move_y(delta, running_y):
+    mouse.move(0, delta)
+    print(f"X: {running_x}, Y: {running_y}")
+
+    time.sleep(1)
+    return running_y + delta
+
 while True:
     while not ble.connected:
         pass
@@ -167,28 +199,33 @@ while True:
 
     while ble.connected:
         if not button_top_red.value:
-            print("Button 12 (top red) - Zoom: Toggle Video")
-            zoom_toggle_video()
+            # print("Button 12 (top red) - Zoom: Toggle Video")
+            # zoom_toggle_video()
+            running_x = move_x(coarse, running_x)
 
         if not button_bot_red.value:
-            print("Button 11 (bot red) - Zoom: Toggle Audio")
-            zoom_toggle_mute()
+            # print("Button 11 (bot red) - Zoom: Toggle Audio")
+            # zoom_toggle_mute()
+            running_x = move_x(fine, running_x)
 
         if not button_top_yel.value:
-            print("Button 10 (top yel) - Zoom: Share Screen")
-            zoom_start_screen_share()
+            # print("Button 10 (top yel) - Zoom: Share Screen")
+            # zoom_start_screen_share()
+            running_y = move_y(coarse, running_y)
 
         if not button_bot_yel.value:
-            print("Button  9 (top yel) - Zoom: Change View")
-            zoom_change_view()
+            # print("Button  9 (top yel) - Zoom: Change View")
+            # zoom_change_view()
+            running_y = move_y(fine, running_y)
 
         if not button_top_grn.value:
             print("Button  5 (top grn) - Zoom: Closing Meeting")
-            zoom_close_meeting()
+            # zoom_close_meeting()
 
         if not button_bot_grn.value:
-            print("Button  6 (bot grn) - Zoom: Assign new host and leave meeting")
-            zoom_assign_host_and_leave_meeting()
+            # print("Button  6 (bot grn) - Zoom: Assign new host and leave meeting")
+            # zoom_assign_host_and_leave_meeting()
+            zoom_start_screen_share()
 
         # Rotary encoder (volume knob)
         current_position = encoder.position
