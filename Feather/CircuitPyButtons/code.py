@@ -95,6 +95,41 @@ def move_mouse_to_right_monitor():
     mouse.click(Mouse.LEFT_BUTTON)
     time.sleep(0.1)
 
+def zoom_toggle_video():
+    move_mouse_to_right_monitor()
+    k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.V)
+    time.sleep(0.4)
+
+def zoom_toggle_mute():
+    move_mouse_to_right_monitor()
+    k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.A)
+    time.sleep(0.4)
+
+def zoom_change_view():
+    move_mouse_to_right_monitor()
+    k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.W)
+    time.sleep(0.4)
+
+def zoom_start_screen_share():
+    move_mouse_to_right_monitor()
+    k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.S)
+    time.sleep(0.1)
+    k.send(Keycode.RIGHT_ARROW)
+    time.sleep(0.1)
+    k.send(Keycode.ENTER)
+    time.sleep(0.4)
+
+def zoom_start_meeting():
+    k.send(Keycode.COMMAND, Keycode.CONTROL, Keycode.V)
+    time.sleep(0.4)
+
+def zoom_close_meeting():
+    move_mouse_to_right_monitor()
+    k.send(Keycode.COMMAND, Keycode.W)
+    time.sleep(0.1)
+    k.send(Keycode.ENTER)
+    time.sleep(0.4)
+
 while True:
     while not ble.connected:
         pass
@@ -103,44 +138,27 @@ while True:
     while ble.connected:
         if not button_top_red.value:
             print("Button 12 (top red) - Toggle Video")
-            move_mouse_to_right_monitor()
-            k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.V)
-            time.sleep(0.4)
+            zoom_toggle_video()
 
         if not button_bot_red.value:
             print("Button 11 (bot red) - Toggle Mute")
-            move_mouse_to_right_monitor()
-            k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.A)
-            time.sleep(0.4)
+            zoom_toggle_mute()
 
         if not button_top_yel.value:
             print("Button  9 (top yel) - Change View")
-            move_mouse_to_right_monitor()
-            k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.W)
-            time.sleep(0.4)
+            zoom_change_view()
 
         if not button_bot_yel.value:
             print("Button 10 (bot yel) - Start Screen Share")
-            move_mouse_to_right_monitor()
-            k.send(Keycode.COMMAND, Keycode.SHIFT, Keycode.S)
-            time.sleep(0.1)
-            k.send(Keycode.RIGHT_ARROW)
-            time.sleep(0.1)
-            k.send(Keycode.ENTER)
-            time.sleep(0.4)
+            zoom_start_screen_share()
 
         if not button_top_blu.value:
             print("Button  6 (top blu) - Start Meeting")
-            k.send(Keycode.COMMAND, Keycode.CONTROL, Keycode.V)
-            time.sleep(0.4)
+            zoom_start_meeting()
 
         if not button_bot_blu.value:
             print("Button  5 (bot blu) - Closing Meeting")
-            move_mouse_to_right_monitor()
-            k.send(Keycode.COMMAND, Keycode.W)
-            time.sleep(0.1)
-            k.send(Keycode.ENTER)
-            time.sleep(0.4)
+            zoom_close_meeting()
 
         # Rotary encoder (volume knob)
         current_position = encoder.position
