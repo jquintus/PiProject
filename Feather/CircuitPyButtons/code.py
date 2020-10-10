@@ -29,21 +29,21 @@ button_bot_red = DigitalInOut(board.D11)
 button_bot_red.direction = Direction.INPUT
 button_bot_red.pull = Pull.UP
 
-button_bot_yel = DigitalInOut(board.D10)
-button_bot_yel.direction = Direction.INPUT
-button_bot_yel.pull = Pull.UP
-
-button_top_yel = DigitalInOut(board.D9)
+button_top_yel = DigitalInOut(board.D10)
 button_top_yel.direction = Direction.INPUT
 button_top_yel.pull = Pull.UP
 
-button_top_blu = DigitalInOut(board.D6)
-button_top_blu.direction = Direction.INPUT
-button_top_blu.pull = Pull.UP
+button_bot_yel = DigitalInOut(board.D9)
+button_bot_yel.direction = Direction.INPUT
+button_bot_yel.pull = Pull.UP
 
-button_bot_blu = DigitalInOut(board.D5)
-button_bot_blu.direction = Direction.INPUT
-button_bot_blu.pull = Pull.UP
+button_bot_grn = DigitalInOut(board.D6)
+button_bot_grn.direction = Direction.INPUT
+button_bot_grn.pull = Pull.UP
+
+button_top_grn = DigitalInOut(board.D5)
+button_top_grn.direction = Direction.INPUT
+button_top_grn.pull = Pull.UP
 
 # Set up rotary encoder
 encoder = rotaryio.IncrementalEncoder(board.A1, board.A0)
@@ -130,17 +130,14 @@ def zoom_close_meeting():
     k.send(Keycode.ENTER)
     time.sleep(0.4)
 
-running_x = 0
-running_y = 0
-def zoom_leave_meeting():
+def zoom_assign_host_and_leave_meeting():
     """
     Leave a meeting you started without stoping the meeting for everyone else.
 
-    To do this, we need to select another meeting participant to become the leader.  There are no keyboard shortcut for this, so we have to carefully move the mouse into the right position.
+    To do this, we need to select another meeting participant to become the 
+    new host. There are no keyboard shortcut for this, so we have to carefully 
+    move the mouse into the right position.
     """
-    running_x = 0
-    running_y = 0
-
     move_mouse_to_right_monitor()
     move_mouse_to_right_monitor() # Doing this a secon
                                   # time ensures we kno
@@ -169,45 +166,28 @@ while True:
 
     while ble.connected:
         if not button_top_red.value:
-            print("Button 12 (top red) - Move mouse coarse right")
-            running_x += coarse
-            mouse.move(coarse)
-            time.sleep(1)
-            print (f"X: {running_x}, Y: {running_y}")
+            print("Button 12 (top red) - Zoom: Toggle Video")
+            zoom_toggle_video()
 
         if not button_bot_red.value:
-            print("Button 11 (bot red) - Move mouse fine right")
-
-            running_x += fine
-            mouse.move(fine)
-            
-            time.sleep(1)
-            print (f"X: {running_x}, Y: {running_y}")
+            print("Button 11 (bot red) - Zoom: Toggle Audio")
+            zoom_toggle_mute()
 
         if not button_top_yel.value:
-            print("Button 10 (top yel) - Move mouse coarse Y")
-            running_y += coarse
-            mouse.move(y = coarse)
-            time.sleep(1)
-            print (f"X: {running_x}, Y: {running_y}")
+            print("Button 10 (top yel) - Zoom: Share Screen")
+            zoom_start_screen_share()
 
         if not button_bot_yel.value:
-            print("Button  9 (bot yel) - Move mouse fine Y")
+            print("Button  9 (top yel) - Zoom: Change View")
+            zoom_change_view()
 
-            running_y += fine
-            mouse.move(y = fine)
-            time.sleep(1)
-            print (f"X: {running_x}, Y: {running_y}")
+        if not button_top_grn.value:
+            print("Button  5 (top grn) - Zoom: Closing Meeting")
+            zoom_close_meeting()
 
-
-        if not button_top_blu.value:
-            print("Button  6 (top blu) - leave meeting")
-            zoom_leave_meeting()
-
-        if not button_bot_blu.value:
-            print("Button  5 (bot blu) - Closing Meeting")
-            mouse.click(Mouse.LEFT_BUTTON)
-            time.sleep(0.4)
+        if not button_bot_grn.value:
+            print("Button  6 (bot grn) - Zoom: Assign new host and leave meeting")
+            zoom_assign_host_and_leave_meeting()
 
         # Rotary encoder (volume knob)
         current_position = encoder.position
