@@ -130,6 +130,38 @@ def zoom_close_meeting():
     k.send(Keycode.ENTER)
     time.sleep(0.4)
 
+running_x = 0
+running_y = 0
+def zoom_leave_meeting():
+    """
+    Leave a meeting you started without stoping the meeting for everyone else.
+
+    To do this, we need to select another meeting participant to become the leader.  There are no keyboard shortcut for this, so we have to carefully move the mouse into the right position.
+    """
+    running_x = 0
+    running_y = 0
+
+    move_mouse_to_right_monitor()
+    move_mouse_to_right_monitor() # Doing this a secon
+                                  # time ensures we kno
+                                  # exactly where the mouse is
+    k.send(Keycode.COMMAND, Keycode.W) # Opens the "End for all or leave" menu
+    time.sleep(0.1)
+
+    mouse.move(x=-750, y=-425)     # Move the cursor to (roughly) 
+                                   # the center of the screen which 
+                                   # is where the leave button is
+    time.sleep(0.1)
+    mouse.click(Mouse.LEFT_BUTTON) # Click the leave button
+                                   # this opens the menu to select a new host
+                                   # That menu will select the first perso
+                                   # by default. We don't need to change that.
+    time.sleep(0.1)
+    mouse.click(Mouse.LEFT_BUTTON) # Click the "assign and leave" button
+
+coarse = -200
+fine = -25
+
 while True:
     while not ble.connected:
         pass
@@ -137,28 +169,45 @@ while True:
 
     while ble.connected:
         if not button_top_red.value:
-            print("Button 12 (top red) - Toggle Video")
-            zoom_toggle_video()
+            print("Button 12 (top red) - Move mouse coarse right")
+            running_x += coarse
+            mouse.move(coarse)
+            time.sleep(1)
+            print (f"X: {running_x}, Y: {running_y}")
 
         if not button_bot_red.value:
-            print("Button 11 (bot red) - Toggle Mute")
-            zoom_toggle_mute()
+            print("Button 11 (bot red) - Move mouse fine right")
+
+            running_x += fine
+            mouse.move(fine)
+            
+            time.sleep(1)
+            print (f"X: {running_x}, Y: {running_y}")
 
         if not button_top_yel.value:
-            print("Button  9 (top yel) - Change View")
-            zoom_change_view()
+            print("Button 10 (top yel) - Move mouse coarse Y")
+            running_y += coarse
+            mouse.move(y = coarse)
+            time.sleep(1)
+            print (f"X: {running_x}, Y: {running_y}")
 
         if not button_bot_yel.value:
-            print("Button 10 (bot yel) - Start Screen Share")
-            zoom_start_screen_share()
+            print("Button  9 (bot yel) - Move mouse fine Y")
+
+            running_y += fine
+            mouse.move(y = fine)
+            time.sleep(1)
+            print (f"X: {running_x}, Y: {running_y}")
+
 
         if not button_top_blu.value:
-            print("Button  6 (top blu) - Start Meeting")
-            zoom_start_meeting()
+            print("Button  6 (top blu) - leave meeting")
+            zoom_leave_meeting()
 
         if not button_bot_blu.value:
             print("Button  5 (bot blu) - Closing Meeting")
-            zoom_close_meeting()
+            mouse.click(Mouse.LEFT_BUTTON)
+            time.sleep(0.4)
 
         # Rotary encoder (volume knob)
         current_position = encoder.position
