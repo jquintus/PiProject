@@ -92,8 +92,9 @@ def move_mouse_to_right_monitor():
     mouse.move(y=-100)
     mouse.move(x = SCREEN_X)
     mouse.move(x=-100)
+    time.sleep(0.3)
     mouse.click(Mouse.LEFT_BUTTON)
-    time.sleep(0.01)
+    time.sleep(0.3)
 
 def zoom_toggle_video():
     move_mouse_to_right_monitor()
